@@ -1,7 +1,15 @@
-import mongoose from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 import validator from 'validator';
 
-const userSchema = new mongoose.Schema(
+// interface IUser extends Document {
+//   name: string;
+//   email: string;
+//   password: string;
+//   avatar: string;
+//   date: Date;
+// }
+
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -22,22 +30,27 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Password is required'],
       minlength: 8,
     },
-    profilePicture: {
-      type: String,
-      default: '',
-    },
-    coverPicture: {
-      type: String,
-      default: '',
-    },
-    followers: {
-      type: Array,
-      default: [],
-    },
-    following: {
-      type: Array,
-      default: [],
-    },
+    friends: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+        },
+      },
+    ],
+    pendingRequests: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+        },
+      },
+    ],
+    receivedRequests: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+        },
+      },
+    ],
     avatar: {
       type: String,
     },
@@ -49,6 +62,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
 
 export default User;

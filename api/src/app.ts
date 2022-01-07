@@ -7,7 +7,8 @@ import userRouter from './routes/userRoutes';
 import authRouter from './routes/authRoutes';
 import postRouter from './routes/postRoutes';
 import profileRouter from './routes/profileRoutes';
-import { PORT, MONGO_URI } from '../config/keys';
+import { PORT, MONGO_URI } from './config/keys';
+import { handleErrors } from './middlewares/handleErrors';
 const app = express();
 
 // CONNECT TO DB
@@ -33,6 +34,9 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/profile', profileRouter);
+
+//ERROR HANDLING
+app.use(handleErrors);
 
 // START SERVER
 app.listen(PORT, () => {
