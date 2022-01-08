@@ -1,9 +1,10 @@
+import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import Post from '../models/postModel';
 import Profile from '../models/profileModel';
 import User from '../models/userModel';
 
-export const getMyProfile = async (req: any, res) => {
+export const getMyProfile = async (req: Request, res: Response) => {
   try {
     const profile = await Profile.findOne({
       user: req.user.id,
@@ -20,7 +21,7 @@ export const getMyProfile = async (req: any, res) => {
   }
 };
 
-export const createProfile = async (req: any, res) => {
+export const createProfile = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -42,10 +43,7 @@ export const createProfile = async (req: any, res) => {
   // build a profile
   const profileFields = {
     user: req.user.id,
-    website: website,
-    // website && website !== ''
-    //   ? normalizeUrl(website, { forceHttps: true })
-    //   : '',
+    website: 'https:' + website,
     skills: Array.isArray(skills)
       ? skills
       : skills.split(',').map((skill) => ' ' + skill.trim()),
@@ -77,7 +75,7 @@ export const createProfile = async (req: any, res) => {
   }
 };
 
-export const getAllProfiles = async (req, res) => {
+export const getAllProfiles = async (req: Request, res: Response) => {
   try {
     const profiles = await Profile.find().populate('user', ['name', 'avatar']);
     res.json(profiles);
@@ -102,7 +100,7 @@ export const getProfile = async ({ params: { user_id } }, res) => {
   }
 };
 
-export const deleteAccount = async (req: any, res) => {
+export const deleteAccount = async (req: Request, res: Response) => {
   try {
     // Remove user posts
     // Remove profile
@@ -120,7 +118,7 @@ export const deleteAccount = async (req: any, res) => {
   }
 };
 
-export const addEducation = async (req: any, res) => {
+export const addEducation = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -140,7 +138,7 @@ export const addEducation = async (req: any, res) => {
   }
 };
 
-export const deleteEducation = async (req: any, res) => {
+export const deleteEducation = async (req: Request, res: Response) => {
   try {
     const foundProfile = await Profile.findOne({ user: req.user.id });
     foundProfile.education = foundProfile.education.filter(

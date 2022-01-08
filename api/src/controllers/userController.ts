@@ -4,8 +4,9 @@ import gravatar from 'gravatar';
 import { validationResult } from 'express-validator';
 import { JWT_EXPIRES, JWT_SECRET } from '../config/keys';
 import User from '../models/userModel';
+import { Request, Response } from 'express';
 
-export const registerUser = async (req, res) => {
+export const registerUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });

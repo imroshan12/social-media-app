@@ -1,9 +1,10 @@
+import { Response, Request, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
-export const auth = (req, res, next) => {
+export const auth = (req: Request, res: Response, next: NextFunction) => {
   // Get token from header
-  const token = req.header('x-auth-token');
+  const token: string = req.header('x-auth-token');
 
   // Check if not token
   if (!token) {

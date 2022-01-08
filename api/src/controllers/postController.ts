@@ -1,8 +1,9 @@
+import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import User from '../models/userModel';
 import Post from '../models/postModel';
 
-export const createPost = async (req: any, res) => {
+export const createPost = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -27,7 +28,7 @@ export const createPost = async (req: any, res) => {
   }
 };
 
-export const getAllPosts = async (req, res) => {
+export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const posts = await Post.find().sort({ date: -1 });
     res.json(posts);
@@ -37,7 +38,7 @@ export const getAllPosts = async (req, res) => {
   }
 };
 
-export const getPost = async (req, res) => {
+export const getPost = async (req: Request, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -53,7 +54,7 @@ export const getPost = async (req, res) => {
   }
 };
 
-export const deletePost = async (req, res) => {
+export const deletePost = async (req: Request, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -76,7 +77,7 @@ export const deletePost = async (req, res) => {
   }
 };
 
-export const likePost = async (req: any, res) => {
+export const likePost = async (req: Request, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -96,7 +97,7 @@ export const likePost = async (req: any, res) => {
   }
 };
 
-export const unlikePost = async (req: any, res) => {
+export const unlikePost = async (req: Request, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -119,7 +120,7 @@ export const unlikePost = async (req: any, res) => {
   }
 };
 
-export const addComment = async (req: any, res) => {
+export const addComment = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -147,7 +148,7 @@ export const addComment = async (req: any, res) => {
   }
 };
 
-export const deleteComment = async (req: any, res) => {
+export const deleteComment = async (req: Request, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
