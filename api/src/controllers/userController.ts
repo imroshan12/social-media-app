@@ -5,8 +5,12 @@ import { validationResult } from 'express-validator';
 import { JWT_EXPIRES, JWT_SECRET } from '../config/keys';
 import User from '../models/userModel';
 import { Request, Response } from 'express';
+import { IGetUserAuthInfoRequest } from '../utils/interfaces';
 
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -52,6 +56,21 @@ export const registerUser = async (req: Request, res: Response) => {
       if (err) throw err;
       res.json({ token });
     });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+export const searchUsers = async (req: Request, res: Response) => {
+  try {
+    const searchField = req.query.name;
+    let users = await User.find({
+      name: { $regex: searchField, $options: 'i' },
+    });
+    //Find users having a profile field
+    users = users.filter((user) => user.profile);
+    res.status(200).json(users);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

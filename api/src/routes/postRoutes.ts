@@ -26,6 +26,17 @@ router.get('/', auth, postController.getAllPosts);
 // @access   Private
 router.get('/:id', auth, checkObjectId('id'), postController.getPost);
 
+// @route    PUT api/posts/:id
+// @desc     Update a post
+// @access   Private
+router.put(
+  '/:id',
+  auth,
+  checkObjectId('id'),
+  check('text', 'Text is required').notEmpty(),
+  postController.editPost
+);
+
 // @route    DELETE api/posts/:id
 // @desc     Delete a post
 // @access   Private
@@ -50,6 +61,16 @@ router.post(
   checkObjectId('id'),
   check('text', 'Text is required').notEmpty(),
   postController.addComment
+);
+
+// @route    PUT api/posts/comment/:id/:comment_id
+// @desc     Edit comment
+// @access   Private
+router.put(
+  '/comment/:id/:comment_id',
+  auth,
+  check('text', 'Text is required').notEmpty(),
+  postController.editComment
 );
 
 // @route    DELETE api/posts/comment/:id/:comment_id

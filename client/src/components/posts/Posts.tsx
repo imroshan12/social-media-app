@@ -14,18 +14,18 @@ const Posts = () => {
   return loading ? (
     <Spinner />
   ) : (
-    <section className='container'>
-      <h1 className='large text-primary'>Posts</h1>
+    <Fragment>
+      <h1 className='large text-success'>Posts</h1>
       <p className='lead'>
         <i className='fas fa-user' /> Welcome to the community
       </p>
       <PostForm />
-      <div className='posts'>
+      <div className='posts mt-3'>
         {posts.map((post) => (
           <PostItem key={post._id} post={post} />
         ))}
       </div>
-    </section>
+    </Fragment>
   );
 };
 

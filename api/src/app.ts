@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 import userRouter from './routes/userRoutes';
 import authRouter from './routes/authRoutes';
 import postRouter from './routes/postRoutes';
@@ -24,16 +25,21 @@ const corsOptions = {
 };
 
 // MIDDLEWARES
+app.use(express.static(`${__dirname}/public`));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(helmet());
+app.use(fileUpload());
 
 // ROUTES
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/profile', profileRouter);
+app.use('/:file', (req, res) => {
+  res.sendFile(`${__dirname}/public/uploads/${req.params.file}`);
+});
 
 //ERROR HANDLING
 app.use(handleErrors);

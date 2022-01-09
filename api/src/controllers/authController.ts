@@ -5,6 +5,7 @@ import User from '../models/userModel';
 import { JWT_EXPIRES, JWT_SECRET } from '../config/keys';
 import catchAsync from '../utils/catchAsync';
 import { NextFunction, Request, Response } from 'express';
+import { IGetUserAuthInfoRequest } from '../utils/interfaces';
 
 type payload = {
   user: {
@@ -13,14 +14,18 @@ type payload = {
 };
 
 export const getUser = catchAsync(
-  async (req: any, res: any, next: NextFunction): Promise<void> => {
+  async (
+    req: IGetUserAuthInfoRequest,
+    res: any,
+    next: NextFunction
+  ): Promise<void> => {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
   }
 );
 
 export const loginUser = async (
-  req: Request,
+  req: IGetUserAuthInfoRequest,
   res: Response
 ): Promise<Response<void>> => {
   const errors = validationResult(req);

@@ -1,6 +1,23 @@
 import { model, Schema, Document } from 'mongoose';
 import validator from 'validator';
 
+// interface IFriend extends Document {
+//   user: {
+//     type: Schema.Types.ObjectId;
+//   };
+// }
+
+// interface IUser extends Document {
+//   name: string;
+//   email: string;
+//   password: string;
+//   avatar: string;
+//   friends: IFriend[];
+//   pendingRequests: IFriend[];
+//   receivedRequests: IFriend[];
+//   date: Date;
+// }
+
 const userSchema = new Schema(
   {
     name: {
@@ -21,6 +38,10 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: 8,
+    },
+    profile: {
+      type: Schema.Types.ObjectId,
+      ref: 'Profile',
     },
     friends: [
       {

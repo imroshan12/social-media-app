@@ -43,7 +43,7 @@ const Register = (props) => {
 
   return (
     <Fragment>
-      <h1 className='large text-primary'>Sign Up</h1>
+      <h1 className='large text-success'>Sign Up</h1>
       <p className='lead'>
         <i className='fas fa-user'></i> Create Your Account
       </p>
@@ -92,7 +92,11 @@ const Register = (props) => {
             // minLength={8}
           />
         </div>
-        <input type='submit' className='btn btn-primary' value='Register' />
+        <input
+          type='submit'
+          className='btn btn-outline-success'
+          value='Register'
+        />
       </form>
       <p className='my-1'>
         Already have an account? <Link to='/login'>Sign In</Link>

@@ -3,12 +3,22 @@ import { validationResult } from 'express-validator';
 import Post from '../models/postModel';
 import Profile from '../models/profileModel';
 import User from '../models/userModel';
+import { IGetUserAuthInfoRequest } from '../utils/interfaces';
 
-export const getMyProfile = async (req: Request, res: Response) => {
+export const getMyProfile = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
     const profile = await Profile.findOne({
       user: req.user.id,
-    }).populate('user', ['name', 'avatar']);
+    }).populate('user', [
+      'name',
+      'avatar',
+      'friends',
+      'pendingRequests',
+      'receivedRequests',
+    ]);
 
     if (!profile) {
       return res.status(400).json({ msg: 'There is no profile for this user' });
@@ -21,7 +31,10 @@ export const getMyProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const createProfile = async (req: Request, res: Response) => {
+export const createProfile = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -68,6 +81,9 @@ export const createProfile = async (req: Request, res: Response) => {
       { $set: profileFields },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );
+    const user = await User.findById(req.user.id);
+    user.profile = profile.id;
+    await user.save();
     return res.json(profile);
   } catch (err) {
     console.error(err.message);
@@ -75,9 +91,18 @@ export const createProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllProfiles = async (req: Request, res: Response) => {
+export const getAllProfiles = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
-    const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+    const profiles = await Profile.find().populate('user', [
+      'name',
+      'avatar',
+      'friends',
+      'pendingRequests',
+      'receivedRequests',
+    ]);
     res.json(profiles);
   } catch (err) {
     console.error(err.message);
@@ -100,7 +125,10 @@ export const getProfile = async ({ params: { user_id } }, res) => {
   }
 };
 
-export const deleteAccount = async (req: Request, res: Response) => {
+export const deleteAccount = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
     // Remove user posts
     // Remove profile
@@ -118,7 +146,10 @@ export const deleteAccount = async (req: Request, res: Response) => {
   }
 };
 
-export const addEducation = async (req: Request, res: Response) => {
+export const addEducation = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -138,7 +169,10 @@ export const addEducation = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteEducation = async (req: Request, res: Response) => {
+export const deleteEducation = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
     const foundProfile = await Profile.findOne({ user: req.user.id });
     foundProfile.education = foundProfile.education.filter(

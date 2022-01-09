@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import { v4 as uuidv4 } from 'uuid';
 import User from '../models/userModel';
 import Post from '../models/postModel';
+import { IGetUserAuthInfoRequest } from '../utils/interfaces';
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: any, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -11,24 +13,45 @@ export const createPost = async (req: Request, res: Response) => {
 
   try {
     const user = await User.findById(req.user.id).select('-password');
-
-    const newPost = new Post({
+    const postData = {
       text: req.body.text,
       name: user.name,
       avatar: user.avatar,
       user: req.user.id,
-    });
+      image: '',
+    };
+
+    if (req.files) {
+      const file = req.files.file;
+      file.name = uuidv4() + file.name.slice(-4);
+      await file.mv(
+        `C:/hv-bootcamp/social-media-app/client/public/uploads/${file.name}`,
+        (err) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send(err);
+          }
+        }
+      );
+      postData.image = `/uploads/${file.name}`;
+    }
+
+    const newPost = new Post(postData);
 
     const post = await newPost.save();
 
     res.json(post);
+    // res.status(200).json({ msg: 'Post Created' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
 };
 
-export const getAllPosts = async (req: Request, res: Response) => {
+export const getAllPosts = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
     const posts = await Post.find().sort({ date: -1 });
     res.json(posts);
@@ -38,7 +61,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
-export const getPost = async (req: Request, res: Response) => {
+export const getPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -54,7 +77,37 @@ export const getPost = async (req: Request, res: Response) => {
   }
 };
 
-export const deletePost = async (req: Request, res: Response) => {
+export const editPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+
+    // Check user
+    if (post.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    //Update the post
+    post.text = req.body.text;
+
+    //Save the post
+    await post.save();
+
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+
+    res.status(500).send('Server Error');
+  }
+};
+
+export const deletePost = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -77,7 +130,7 @@ export const deletePost = async (req: Request, res: Response) => {
   }
 };
 
-export const likePost = async (req: Request, res: Response) => {
+export const likePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -97,7 +150,10 @@ export const likePost = async (req: Request, res: Response) => {
   }
 };
 
-export const unlikePost = async (req: Request, res: Response) => {
+export const unlikePost = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -120,7 +176,10 @@ export const unlikePost = async (req: Request, res: Response) => {
   }
 };
 
-export const addComment = async (req: Request, res: Response) => {
+export const addComment = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -148,7 +207,46 @@ export const addComment = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteComment = async (req: Request, res: Response) => {
+export const editComment = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const post = await Post.findById(req.params.id);
+
+    // Pull out comment
+    const comment = post.comments.find(
+      (comment) => comment.id === req.params.comment_id
+    );
+    // Make sure comment exists
+    if (!comment) {
+      return res.status(404).json({ msg: 'Comment does not exist' });
+    }
+    // Check user
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    comment.text = req.body.text;
+
+    await post.save();
+
+    return res.json(post.comments);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+export const deleteComment = async (
+  req: IGetUserAuthInfoRequest,
+  res: Response
+) => {
   try {
     const post = await Post.findById(req.params.id);
 

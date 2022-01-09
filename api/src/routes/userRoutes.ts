@@ -19,6 +19,11 @@ router.post(
   userController.registerUser
 );
 
+// @route    GET api/users
+// @desc     Get users by query
+// @access   Public
+router.get('/search', userController.searchUsers);
+
 // @route    POST api/users/send-request/:id
 // @desc     Send friend request
 // @access   Private

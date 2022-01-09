@@ -1,12 +1,37 @@
-import mongoose from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-const postSchema = new mongoose.Schema({
+// interface ILike extends Document {
+//   user: Schema.Types.ObjectId;
+// }
+
+// interface IComment extends Document {
+//   user: Schema.Types.ObjectId;
+//   post: Schema.Types.ObjectId;
+//   name: string;
+//   avatar: string;
+//   date: Date;
+// }
+
+// interface IPost extends Document {
+//   user: Schema.Types.ObjectId;
+//   text: string;
+//   name: string;
+//   avatar: string;
+//   likes: ILike[];
+//   comments: IComment[];
+//   date: Date;
+// }
+
+const postSchema = new Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
   },
   text: {
     type: String,
     required: true,
+  },
+  image: {
+    type: String,
   },
   name: {
     type: String,
@@ -17,14 +42,14 @@ const postSchema = new mongoose.Schema({
   likes: [
     {
       user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
       },
     },
   ],
   comments: [
     {
       user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
       },
       text: {
         type: String,
@@ -48,6 +73,6 @@ const postSchema = new mongoose.Schema({
   },
 });
 
-const Post = mongoose.model('Post', postSchema);
+const Post = model('Post', postSchema);
 
 export default Post;

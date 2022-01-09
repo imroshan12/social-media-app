@@ -5,20 +5,30 @@ import { addPost } from '../../actions/post';
 const PostForm = () => {
   const dispatch = useDispatch();
   const [text, setText] = useState('');
+  const [file, setFile] = useState('');
+  const [filename, setFilename] = useState('Choose File');
+
+  const onChange = (e) => {
+    setFile(e.target.files[0]);
+    setFilename(e.target.files[0].name);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('text', text);
+    formData.append('file', file);
+    dispatch(addPost(formData));
+    setText('');
+    setFile('');
+  };
 
   return (
-    <div className='post-form'>
-      <div className='bg-primary p'>
+    <div className='post-form pb-3'>
+      <div className='bg-success p'>
         <h3>Say Something...</h3>
       </div>
-      <form
-        className='form my-1'
-        onSubmit={(e) => {
-          e.preventDefault();
-          dispatch(addPost({ text }));
-          setText('');
-        }}
-      >
+      <form className='form my-1' onSubmit={onSubmit}>
         <textarea
           name='text'
           cols={30}
@@ -28,7 +38,18 @@ const PostForm = () => {
           onChange={(e) => setText(e.target.value)}
           required
         />
-        <input type='submit' className='btn btn-dark my-1' value='Submit' />
+        <div className='mb-4'>
+          <label className='form-label' htmlFor='customFile'>
+            Upload image
+          </label>
+          <input
+            type='file'
+            className='form-control'
+            id='customFile'
+            onChange={onChange}
+          />
+        </div>
+        <input type='submit' className='btn btn-dark my-1' value='Post' />
       </form>
     </div>
   );

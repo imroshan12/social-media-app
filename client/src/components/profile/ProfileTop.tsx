@@ -8,7 +8,7 @@ const ProfileTop = () => {
   //   console.log(profile.user);
 
   return (
-    <div className='profile-top bg-primary p-2'>
+    <div className='profile-top bg-success p-2'>
       <img className='round-img my-1' src={user.avatar} alt='' />
       <h1 className='large'>{user.name}</h1>
       <p className='lead'>

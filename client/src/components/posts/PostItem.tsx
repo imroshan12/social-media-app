@@ -5,7 +5,7 @@ import formatDate from '../../utils/formatDate';
 import { addLike, deletePost, removeLike } from '../../actions/post';
 
 const PostItem = ({
-  post: { _id, text, name, avatar, user, date, comments, likes },
+  post: { _id, text, name, avatar, user, date, comments, likes, image },
 }) => {
   const dispatch = useDispatch();
   const auth = useSelector((state: RootStateOrAny) => state.auth);
@@ -19,6 +19,7 @@ const PostItem = ({
         </Link>
       </div>
       <div>
+        {image && <img style={{ width: '100%' }} src={image} alt='post' />}
         <p className='my-1'>{text}</p>
         <p className='post-date'>Posted on {formatDate(date)}</p>
 
@@ -39,7 +40,7 @@ const PostItem = ({
           >
             <i className='fas fa-thumbs-down' />
           </button>
-          <Link to={`/posts/${_id}`} className='btn btn-primary'>
+          <Link to={`/posts/${_id}`} className='btn btn-success'>
             Discussion{' '}
             {comments.length > 0 && (
               <span className='comment-count'>{comments.length}</span>

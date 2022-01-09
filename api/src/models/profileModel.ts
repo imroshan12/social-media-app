@@ -1,8 +1,39 @@
-import mongoose from 'mongoose';
+import { Schema, Document, model } from 'mongoose';
 
-const profileSchema = new mongoose.Schema({
+// interface IEducation extends Document {
+//   school: string;
+//   degree: string;
+//   fieldofstudy: string;
+//   from: Date;
+//   to: Date;
+//   current: boolean;
+//   description: string;
+// }
+
+// interface ISocial extends Document {
+//   youtube: string;
+//   twitter: string;
+//   instagram: string;
+//   linkedin: string;
+//   facebook: string;
+// }
+
+// interface IProfile extends Document {
+//   user: Schema.Types.ObjectId;
+//   company: string;
+//   website: string;
+//   location: string;
+//   status: string;
+//   skills: string[];
+//   bio: string;
+//   education: IEducation[];
+//   social: ISocial;
+//   date: Date;
+// }
+
+const profileSchema = new Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
   },
   company: {
@@ -25,35 +56,6 @@ const profileSchema = new mongoose.Schema({
   bio: {
     type: String,
   },
-  experience: [
-    {
-      title: {
-        type: String,
-        required: true,
-      },
-      company: {
-        type: String,
-        required: true,
-      },
-      location: {
-        type: String,
-      },
-      from: {
-        type: Date,
-        required: true,
-      },
-      to: {
-        type: Date,
-      },
-      current: {
-        type: Boolean,
-        default: false,
-      },
-      description: {
-        type: String,
-      },
-    },
-  ],
   education: [
     {
       school: {
@@ -107,6 +109,6 @@ const profileSchema = new mongoose.Schema({
   },
 });
 
-const Profile = mongoose.model('Profile', profileSchema);
+const Profile = model('Profile', profileSchema);
 
 export default Profile;
