@@ -9,6 +9,8 @@ import {
   GET_POSTS,
   POST_ERROR,
   UPDATE_LIKES,
+  EDIT_POST,
+  EDIT_COMMENT,
 } from '../action-types/post';
 
 //GET POSTS ACTION
@@ -96,6 +98,32 @@ export const deletePost = (id) => async (dispatch) => {
   }
 };
 
+//EDIT POST ACTION
+export const editPost = (id, formData) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  try {
+    const res = await axios.put(
+      `http://localhost:8000/api/v1/posts/${id}`,
+      formData,
+      config
+    );
+    dispatch({
+      type: EDIT_POST,
+      payload: res.data,
+    });
+    dispatch(setAlert('Post Updated', 'success'));
+  } catch (err: any) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.data.msg, status: err.response.status },
+    });
+  }
+};
+
 //ADD POST ACTION
 export const addPost = (formData) => async (dispatch) => {
   // const config = {
@@ -156,7 +184,7 @@ export const addComment = (postId, formData) => async (dispatch) => {
 //ADD COMMENT ACTION
 export const deleteComment = (postId, commentId) => async (dispatch) => {
   try {
-    const res = await axios.post(
+    const res = await axios.delete(
       `http://localhost:8000/api/v1/posts/comment/${postId}/${commentId}`
     );
     dispatch({
@@ -171,3 +199,33 @@ export const deleteComment = (postId, commentId) => async (dispatch) => {
     });
   }
 };
+
+//ADD COMMENT ACTION
+export const editComment =
+  (postId, commentId, formData) => async (dispatch) => {
+    const data = {
+      text: formData,
+    };
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.put(
+        `http://localhost:8000/api/v1/posts/comment/${postId}/${commentId}`,
+        data,
+        config
+      );
+      dispatch({
+        type: EDIT_COMMENT,
+        payload: res.data,
+      });
+      dispatch(setAlert('Comment deleted', 'success'));
+    } catch (err: any) {
+      dispatch({
+        type: POST_ERROR,
+        payload: { msg: err.response.data.msg, status: err.response.status },
+      });
+    }
+  };

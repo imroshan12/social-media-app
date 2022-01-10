@@ -43,27 +43,10 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Profile',
     },
-    friends: [
-      {
-        user: {
-          type: Schema.Types.ObjectId,
-        },
-      },
-    ],
-    pendingRequests: [
-      {
-        user: {
-          type: Schema.Types.ObjectId,
-        },
-      },
-    ],
-    receivedRequests: [
-      {
-        user: {
-          type: Schema.Types.ObjectId,
-        },
-      },
-    ],
+    friends: {
+      type: [Schema.Types.ObjectId],
+      ref: 'User',
+    },
     avatar: {
       type: String,
     },
@@ -78,3 +61,25 @@ const userSchema = new Schema(
 const User = model('User', userSchema);
 
 export default User;
+
+// friends: [
+//   {
+//     user: {
+//       type: Schema.Types.ObjectId,
+//     },
+//   },
+// ],
+// pendingRequests: [
+//   {
+//     user: {
+//       type: Schema.Types.ObjectId,
+//     },
+//   },
+// ],
+// receivedRequests: [
+//   {
+//     user: {
+//       type: Schema.Types.ObjectId,
+//     },
+//   },
+// ],

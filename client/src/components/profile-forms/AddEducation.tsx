@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addEducation } from '../../actions/profile';
 
 const AddEducation = () => {
@@ -41,7 +40,7 @@ const AddEducation = () => {
         <div className='form-group'>
           <input
             type='text'
-            placeholder='* School or Bootcamp'
+            placeholder='* School'
             name='school'
             value={school}
             onChange={onChange}
@@ -51,7 +50,7 @@ const AddEducation = () => {
         <div className='form-group'>
           <input
             type='text'
-            placeholder='* Degree or Certificate'
+            placeholder='* Perentage'
             name='degree'
             value={degree}
             onChange={onChange}

@@ -7,6 +7,8 @@ import {
   GET_POST,
   REMOVE_COMMENT,
   ADD_COMMENT,
+  EDIT_POST,
+  EDIT_COMMENT,
 } from '../action-types/post';
 
 interface state {
@@ -38,6 +40,14 @@ const post = (state = initialState, action) => {
         post: payload,
         loading: false,
       };
+    case EDIT_POST:
+      return {
+        ...state,
+        posts: state.posts.map(
+          (post) => (post._id === payload._id ? payload : post) //if the post id is equal to the payload id, then replace the post with the payload
+        ),
+        loading: false,
+      };
     case ADD_POST:
       return {
         ...state,
@@ -64,6 +74,7 @@ const post = (state = initialState, action) => {
         ),
       };
     case ADD_COMMENT:
+    case EDIT_COMMENT:
       return {
         ...state,
         post: { ...state.post, comments: payload },

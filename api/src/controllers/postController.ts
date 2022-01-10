@@ -77,7 +77,7 @@ export const getPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
   }
 };
 
-export const editPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
+export const editPost = async (req: any, res: Response) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -92,6 +92,22 @@ export const editPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
 
     //Update the post
     post.text = req.body.text;
+    if (req.files) {
+      const file = req.files.file;
+      file.name = uuidv4() + file.name.slice(-4);
+      await file.mv(
+        `C:/hv-bootcamp/social-media-app/client/public/uploads/${file.name}`,
+        (err) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send(err);
+          }
+        }
+      );
+      post.image = `/uploads/${file.name}`;
+    } else {
+      post.image = '';
+    }
 
     //Save the post
     await post.save();

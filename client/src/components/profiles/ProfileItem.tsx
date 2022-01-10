@@ -32,24 +32,6 @@ const ProfileItem = ({
           </li>
         ))}
       </ul>
-      {auth.user._id !== _id && (
-        <Fragment>
-          {auth.user.friends.length &&
-          auth.user.friends.filter((friend) => {
-            return friend._id === _id;
-          }) ? (
-            <button className='btn btn-info'>Friend</button>
-          ) : (
-            <button className='btn btn-info'>Add friend</button>
-          )}
-          {console.log(_id)}
-          {console.log(auth.user)}
-          {/* {console.log(_id, name, avatar, friends)} */}
-
-          <button className='btn btn-success'>Accept</button>
-          <button className='btn btn-warning'>Cancel</button>
-        </Fragment>
-      )}
     </div>
   );
 };

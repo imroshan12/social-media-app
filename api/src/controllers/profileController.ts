@@ -56,12 +56,14 @@ export const createProfile = async (
   // build a profile
   const profileFields = {
     user: req.user.id,
-    website: 'https:' + website,
     skills: Array.isArray(skills)
       ? skills
       : skills.split(',').map((skill) => ' ' + skill.trim()),
     ...rest,
   };
+  if (!website) {
+    profileFields.website = 'https://' + website;
+  }
 
   // Build socialFields object
   const socialFields = { youtube, twitter, instagram, linkedin, facebook };
@@ -114,11 +116,46 @@ export const getProfile = async ({ params: { user_id } }, res) => {
   try {
     const profile = await Profile.findOne({
       user: user_id,
-    }).populate('user', ['name', 'avatar']);
+    }).populate('user', [
+      'name',
+      'avatar',
+      'friends',
+      'pendingRequests',
+      'receivedRequests',
+    ]);
 
     if (!profile) return res.status(400).json({ msg: 'Profile not found' });
 
     return res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ msg: 'Server error' });
+  }
+};
+
+export const getProfileByQuery = async (req, res) => {
+  try {
+    const query = req.params.query;
+    const profiles = await Profile.find().populate('user', [
+      'name',
+      'avatar',
+      'friends',
+      'pendingRequests',
+      'receivedRequests',
+    ]);
+    if (!query) {
+      return res.json(profiles);
+    }
+
+    const filteredProfiles = profiles.filter((profile) => {
+      const regex = new RegExp(query, 'gi');
+      return profile.user.name.match(regex);
+    });
+
+    if (!filteredProfiles)
+      return res.status(400).json({ msg: 'Profile not found' });
+
+    return res.json(filteredProfiles);
   } catch (err) {
     console.error(err.message);
     return res.status(500).json({ msg: 'Server error' });

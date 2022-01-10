@@ -2,6 +2,7 @@ import {
   CLEAR_PROFILE,
   GET_PROFILE,
   GET_PROFILES,
+  GET_QUERY_PROFILES,
   PROFILE_ERROR,
   UPDATE_PROFILE,
 } from '../action-types/profile';
@@ -24,6 +25,7 @@ const profile = (state = initialState, action) => {
         loading: false,
       };
     case GET_PROFILES:
+    case GET_QUERY_PROFILES:
       return {
         ...state,
         profiles: payload,

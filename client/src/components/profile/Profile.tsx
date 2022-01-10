@@ -32,6 +32,13 @@ const Profile = () => {
                 Edit Profile
               </Link>
             )}
+          {auth.user.friends.filter((friend) => {
+            return friend._id === profile.user._id;
+          }) ? (
+            <button className='btn btn-info'>Friend</button>
+          ) : (
+            <button className='btn btn-info'>Add friend</button>
+          )}
           <div className='profile-grid my-1'>
             <ProfileTop />
             <ProfileAbout />
@@ -56,5 +63,24 @@ const Profile = () => {
     </section>
   );
 };
+
+// {auth.user && auth.user._id !== _id && (
+//   <Fragment>
+//     {auth.user.friends.filter((friend) => {
+//       console.log(friend._id === _id);
+
+//       return friend._id === _id;
+//     }) ? (
+//       <button className='btn btn-info'>Friend</button>
+//     ) : (
+//       <button className='btn btn-info'>Add friend</button>
+//     )}
+
+//     <button className='btn btn-success'>Accept</button>
+//     <button className='btn btn-warning'>Cancel</button>
+//   </Fragment>
+// )}
+// {console.log(_id)}
+// {console.log(auth.user)}
 
 export default Profile;

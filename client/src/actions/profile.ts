@@ -7,6 +7,7 @@ import {
   UPDATE_PROFILE,
   ACCOUNT_DELETED,
   GET_PROFILES,
+  GET_QUERY_PROFILES,
 } from '../action-types/profile';
 
 export const getCurrentProfile = () => async (dispatch) => {
@@ -32,6 +33,25 @@ export const getProfiles = () => async (dispatch) => {
 
     dispatch({
       type: GET_PROFILES,
+      payload: res.data,
+    });
+  } catch (err: any) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.data.msg, status: err.response.status },
+    });
+  }
+};
+
+export const getProfilesByQuery = (query) => async (dispatch) => {
+  dispatch({ type: CLEAR_PROFILE });
+  try {
+    const res = await axios.get(
+      `http://localhost:8000/api/v1/profile/query/${query}`
+    );
+
+    dispatch({
+      type: GET_QUERY_PROFILES,
       payload: res.data,
     });
   } catch (err: any) {
@@ -97,10 +117,16 @@ export const createProfile =
   };
 
 export const addEducation = (formData, navigate) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
   try {
     const res = await axios.put(
       'http://localhost:8000/api/v1/profile/education',
-      formData
+      formData,
+      config
     );
 
     dispatch({

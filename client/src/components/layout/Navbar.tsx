@@ -33,7 +33,7 @@ const Navbar = () => {
         </Link>
       </li>
       <li>
-        <a onClick={() => dispatch(logout())} href='#!'>
+        <a onClick={() => dispatch(logout())} href='/login'>
           <i className='fas fa-sign-out-alt'></i>{' '}
           <span className='hide-sm'>Logout</span>
         </a>

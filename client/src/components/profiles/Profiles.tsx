@@ -1,6 +1,6 @@
 import React, { useEffect, Fragment, useState } from 'react';
 import { RootStateOrAny, useSelector, useDispatch } from 'react-redux';
-import { getProfiles } from '../../actions/profile';
+import { getProfilesByQuery } from '../../actions/profile';
 import Spinner from '../layout/Spinner';
 import ProfileItem from './ProfileItem';
 
@@ -11,8 +11,8 @@ const Profiles = () => {
     (state: RootStateOrAny) => state.profile
   );
   useEffect(() => {
-    dispatch(getProfiles());
-  }, [dispatch]);
+    dispatch(getProfilesByQuery(searchTerm));
+  }, [dispatch, searchTerm]);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -39,16 +39,9 @@ const Profiles = () => {
           <div className='profiles'>
             {/* {console.log(profiles.length)} */}
             {profiles ? (
-              profiles
-                .filter((profile) => {
-                  if (searchTerm === '') return profile;
-                  return profile.user.name
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase());
-                })
-                .map((profile) => (
-                  <ProfileItem key={profile._id} profile={profile} />
-                ))
+              profiles.map((profile) => (
+                <ProfileItem key={profile._id} profile={profile} />
+              ))
             ) : (
               <h4>No profiles found...</h4>
             )}

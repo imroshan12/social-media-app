@@ -26,6 +26,11 @@ router.post(
 // @access   Public
 router.get('/', profileController.getAllProfiles);
 
+// @route    GET api/profile/query/:query
+// @desc     Get profiles by query
+// @access   Public
+router.get('/query/:query?', profileController.getProfileByQuery);
+
 // @route    GET api/profile/user/:user_id
 // @desc     Get profile by user ID
 // @access   Public
@@ -48,7 +53,6 @@ router.put(
   auth,
   check('school', 'School is required').notEmpty(),
   check('degree', 'Degree is required').notEmpty(),
-  check('fieldofstudy', 'Field of study is required').notEmpty(),
   check('from', 'From date is required and needs to be from the past')
     .notEmpty()
     .custom((value, { req }) => (req.body.to ? value < req.body.to : true)),
