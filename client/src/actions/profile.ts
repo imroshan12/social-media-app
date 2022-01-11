@@ -188,3 +188,51 @@ export const deleteAccount = () => async (dispatch) => {
     }
   }
 };
+
+export const sendRequest = (id) => async (dispatch) => {
+  try {
+    const res1 = await axios.put(
+      `http://localhost:8000/api/v1/users/send-request/${id}`
+    );
+
+    const res2 = await axios.get(
+      `http://localhost:8000/api/v1/profile/user/${id}`
+    );
+
+    dispatch({
+      type: UPDATE_PROFILE,
+      payload: res2.data,
+    });
+
+    dispatch(setAlert('Friend request sent', 'success'));
+  } catch (err: any) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+export const acceptRequest = (id) => async (dispatch) => {
+  try {
+    const res1 = await axios.put(
+      `http://localhost:8000/api/v1/users/accept-request/${id}`
+    );
+
+    const res2 = await axios.get(
+      `http://localhost:8000/api/v1/profile/user/${id}`
+    );
+
+    dispatch({
+      type: UPDATE_PROFILE,
+      payload: res2.data,
+    });
+
+    dispatch(setAlert('Friend request accepted', 'success'));
+  } catch (err: any) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};

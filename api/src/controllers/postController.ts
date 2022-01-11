@@ -4,65 +4,54 @@ import { v4 as uuidv4 } from 'uuid';
 import User from '../models/userModel';
 import Post from '../models/postModel';
 import { IGetUserAuthInfoRequest } from '../utils/interfaces';
+import catchAsync from '../utils/catchAsync';
 
-export const createPost = async (req: any, res: Response) => {
+export const createPost = catchAsync(async (req: any, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    const postData = {
-      text: req.body.text,
-      name: user.name,
-      avatar: user.avatar,
-      user: req.user.id,
-      image: '',
-    };
+  const user = await User.findById(req.user.id).select('-password');
+  const postData = {
+    text: req.body.text,
+    name: user.name,
+    avatar: user.avatar,
+    user: req.user.id,
+    image: '',
+  };
 
-    if (req.files) {
-      const file = req.files.file;
-      file.name = uuidv4() + file.name.slice(-4);
-      await file.mv(
-        `C:/hv-bootcamp/social-media-app/client/public/uploads/${file.name}`,
-        (err) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send(err);
-          }
+  if (req.files) {
+    const file = req.files.file;
+    file.name = uuidv4() + file.name.slice(-4);
+    await file.mv(
+      `C:/hv-bootcamp/social-media-app/client/public/uploads/${file.name}`,
+      (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send(err);
         }
-      );
-      postData.image = `/uploads/${file.name}`;
-    }
-
-    const newPost = new Post(postData);
-
-    const post = await newPost.save();
-
-    res.json(post);
-    // res.status(200).json({ msg: 'Post Created' });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+      }
+    );
+    postData.image = `/uploads/${file.name}`;
   }
-};
 
-export const getAllPosts = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
-) => {
-  try {
+  const newPost = new Post(postData);
+
+  const post = await newPost.save();
+
+  res.json(post);
+});
+
+export const getAllPosts = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
     const posts = await Post.find().sort({ date: -1 });
     res.json(posts);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
   }
-};
+);
 
-export const getPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
-  try {
+export const getPost = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -70,61 +59,48 @@ export const getPost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     }
 
     res.json(post);
-  } catch (err) {
-    console.error(err.message);
-
-    res.status(500).send('Server Error');
   }
-};
+);
 
-export const editPost = async (req: any, res: Response) => {
-  try {
-    const post = await Post.findById(req.params.id);
+export const editPost = catchAsync(async (req: any, res: Response) => {
+  const post = await Post.findById(req.params.id);
 
-    if (!post) {
-      return res.status(404).json({ msg: 'Post not found' });
-    }
+  if (!post) {
+    return res.status(404).json({ msg: 'Post not found' });
+  }
 
-    // Check user
-    if (post.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
-    }
+  // Check user
+  if (post.user.toString() !== req.user.id) {
+    return res.status(401).json({ msg: 'User not authorized' });
+  }
 
-    //Update the post
-    post.text = req.body.text;
-    if (req.files) {
-      const file = req.files.file;
-      file.name = uuidv4() + file.name.slice(-4);
-      await file.mv(
-        `C:/hv-bootcamp/social-media-app/client/public/uploads/${file.name}`,
-        (err) => {
-          if (err) {
-            console.error(err);
-            return res.status(500).send(err);
-          }
+  //Update the post
+  post.text = req.body.text;
+  if (req.files) {
+    const file = req.files.file;
+    file.name = uuidv4() + file.name.slice(-4);
+    await file.mv(
+      `C:/hv-bootcamp/social-media-app/client/public/uploads/${file.name}`,
+      (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send(err);
         }
-      );
-      post.image = `/uploads/${file.name}`;
-    } else {
-      post.image = '';
-    }
-
-    //Save the post
-    await post.save();
-
-    res.json(post);
-  } catch (err) {
-    console.error(err.message);
-
-    res.status(500).send('Server Error');
+      }
+    );
+    post.image = `/uploads/${file.name}`;
+  } else {
+    post.image = '';
   }
-};
 
-export const deletePost = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
-) => {
-  try {
+  //Save the post
+  await post.save();
+
+  res.json(post);
+});
+
+export const deletePost = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -139,15 +115,11 @@ export const deletePost = async (
     await post.remove();
 
     res.json({ msg: 'Post removed' });
-  } catch (err) {
-    console.error(err.message);
-
-    res.status(500).send('Server Error');
   }
-};
+);
 
-export const likePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
-  try {
+export const likePost = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
     const post = await Post.findById(req.params.id);
 
     // Check if the post has already been liked
@@ -160,17 +132,11 @@ export const likePost = async (req: IGetUserAuthInfoRequest, res: Response) => {
     await post.save();
 
     return res.json(post.likes);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
   }
-};
+);
 
-export const unlikePost = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
-) => {
-  try {
+export const unlikePost = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
     const post = await Post.findById(req.params.id);
 
     // Check if the post has not yet been liked
@@ -186,22 +152,15 @@ export const unlikePost = async (
     await post.save();
 
     return res.json(post.likes);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
   }
-};
+);
 
-export const addComment = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
-) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  try {
+export const addComment = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     const user = await User.findById(req.user.id).select('-password');
     const post = await Post.findById(req.params.id);
 
@@ -217,22 +176,16 @@ export const addComment = async (
     await post.save();
 
     res.json(post.comments);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
   }
-};
+);
 
-export const editComment = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
-) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+export const editComment = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-  try {
     const post = await Post.findById(req.params.id);
 
     // Pull out comment
@@ -253,17 +206,11 @@ export const editComment = async (
     await post.save();
 
     return res.json(post.comments);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
   }
-};
+);
 
-export const deleteComment = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
-) => {
-  try {
+export const deleteComment = catchAsync(
+  async (req: IGetUserAuthInfoRequest, res: Response) => {
     const post = await Post.findById(req.params.id);
 
     // Pull out comment
@@ -286,8 +233,5 @@ export const deleteComment = async (
     await post.save();
 
     return res.json(post.comments);
-  } catch (err) {
-    console.error(err.message);
-    return res.status(500).send('Server Error');
   }
-};
+);

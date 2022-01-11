@@ -4,19 +4,22 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
-import userRouter from './routes/userRoutes';
-import authRouter from './routes/authRoutes';
-import postRouter from './routes/postRoutes';
-import profileRouter from './routes/profileRoutes';
-import { PORT, MONGO_URI } from './config/keys';
-import { handleErrors } from './middlewares/handleErrors';
+import userRouter from './src/routes/userRoutes';
+import authRouter from './src/routes/authRoutes';
+import postRouter from './src/routes/postRoutes';
+import profileRouter from './src/routes/profileRoutes';
+import { PORT, MONGO_URI } from './src/config/keys';
+import { handleErrors } from './src/middlewares/handleErrors';
 const app = express();
 
 // CONNECT TO DB
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log('Connected to database'))
-  .catch((err) => console.log(err));
+  .catch((err) => {
+    console.log(err);
+    process.exit(1);
+  });
 
 const corsOptions = {
   origin: 'http://localhost:3000',

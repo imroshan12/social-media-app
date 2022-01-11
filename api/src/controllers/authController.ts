@@ -24,43 +24,45 @@ export const getUser = catchAsync(
   }
 );
 
-export const loginUser = async (
-  req: IGetUserAuthInfoRequest,
-  res: Response
-): Promise<Response<void>> => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
+export const loginUser = catchAsync(
+  async (
+    req: IGetUserAuthInfoRequest,
+    res: Response
+  ): Promise<Response<void>> => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        errors: [{ msg: 'Invalid Credentials.' }],
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        errors: [{ msg: 'Invalid Credentials.' }],
+      });
+    }
+
+    const payload: payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES }, (err, token) => {
+      if (err) throw err;
+      return res.json({ token });
     });
   }
-
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    return res.status(400).json({
-      errors: [{ msg: 'Invalid Credentials.' }],
-    });
-  }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-
-  if (!isMatch) {
-    return res.status(400).json({
-      errors: [{ msg: 'Invalid Credentials.' }],
-    });
-  }
-
-  const payload: payload = {
-    user: {
-      id: user.id,
-    },
-  };
-
-  jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES }, (err, token) => {
-    if (err) throw err;
-    return res.json({ token });
-  });
-};
+);
