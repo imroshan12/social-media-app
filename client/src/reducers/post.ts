@@ -70,7 +70,7 @@ const post = (state = initialState, action) => {
       return {
         ...state,
         posts: state.posts.map((post: any) =>
-          post.id === payload.id ? { ...post, likes: payload.likes } : post
+          post._id === payload.id ? { ...post, likes: payload.likes } : post
         ),
       };
     case ADD_COMMENT:

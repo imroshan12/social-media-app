@@ -2,7 +2,6 @@ import express from 'express';
 import { check } from 'express-validator';
 import * as userController from '../controllers/userController';
 import { auth } from '../middlewares/auth';
-import FriendRequest from '../models/friendrequestModel';
 import User from '../models/userModel';
 
 const router = express.Router();
