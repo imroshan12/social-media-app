@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { IGetUserAuthInfoRequest } from '../utils/interfaces';
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
@@ -9,7 +9,8 @@ export const auth = (
   next: NextFunction
 ) => {
   // Get token from header
-  const token: string = req.header('x-auth-token');
+  const token: string = req.headers['authorization'];
+  console.log(token);
 
   // Check if not token
   if (!token) {

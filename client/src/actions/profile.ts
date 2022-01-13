@@ -12,7 +12,7 @@ import {
 
 export const getCurrentProfile = () => async (dispatch) => {
   try {
-    const res = await axios.get('http://localhost:8000/api/v1/profile/me');
+    const res = await axios.get('/api/v1/profile/me');
 
     dispatch({
       type: GET_PROFILE,
@@ -29,7 +29,7 @@ export const getCurrentProfile = () => async (dispatch) => {
 export const getProfiles = () => async (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
   try {
-    const res = await axios.get('http://localhost:8000/api/v1/profile');
+    const res = await axios.get('/api/v1/profile');
 
     dispatch({
       type: GET_PROFILES,
@@ -46,9 +46,7 @@ export const getProfiles = () => async (dispatch) => {
 export const getProfilesByQuery = (query) => async (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
   try {
-    const res = await axios.get(
-      `http://localhost:8000/api/v1/profile/query/${query}`
-    );
+    const res = await axios.get(`/api/v1/profile/query/${query}`);
 
     dispatch({
       type: GET_QUERY_PROFILES,
@@ -65,9 +63,7 @@ export const getProfilesByQuery = (query) => async (dispatch) => {
 export const getProfileByID = (userID) => async (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
   try {
-    const res = await axios.get(
-      `http://localhost:8000/api/v1/profile/user/${userID}`
-    );
+    const res = await axios.get(`/api/v1/profile/user/${userID}`);
 
     dispatch({
       type: GET_PROFILE,
@@ -85,10 +81,7 @@ export const createProfile =
   (formData, navigate, edit = false) =>
   async (dispatch) => {
     try {
-      const res = await axios.post(
-        'http://localhost:8000/api/v1/profile',
-        formData
-      );
+      const res = await axios.post('/api/v1/profile', formData);
 
       dispatch({
         type: GET_PROFILE,
@@ -123,11 +116,7 @@ export const addEducation = (formData, navigate) => async (dispatch) => {
     },
   };
   try {
-    const res = await axios.put(
-      'http://localhost:8000/api/v1/profile/education',
-      formData,
-      config
-    );
+    const res = await axios.put('/api/v1/profile/education', formData, config);
 
     dispatch({
       type: UPDATE_PROFILE,
@@ -153,9 +142,7 @@ export const addEducation = (formData, navigate) => async (dispatch) => {
 
 export const deleteEducation = (id) => async (dispatch) => {
   try {
-    const res = await axios.delete(
-      `http://localhost:8000/api/v1/profile/education/${id}`
-    );
+    const res = await axios.delete(`/api/v1/profile/education/${id}`);
 
     dispatch({
       type: UPDATE_PROFILE,
@@ -174,7 +161,7 @@ export const deleteEducation = (id) => async (dispatch) => {
 export const deleteAccount = () => async (dispatch) => {
   if (window.confirm('Are you sure? This can NOT be undone!')) {
     try {
-      await axios.delete('http://localhost:8000/api/v1/profile');
+      await axios.delete('/api/v1/profile');
 
       dispatch({ type: CLEAR_PROFILE });
       dispatch({ type: ACCOUNT_DELETED });
@@ -191,13 +178,9 @@ export const deleteAccount = () => async (dispatch) => {
 
 export const sendRequest = (id) => async (dispatch) => {
   try {
-    const res1 = await axios.put(
-      `http://localhost:8000/api/v1/users/send-request/${id}`
-    );
+    const res1 = await axios.put(`/api/v1/users/send-request/${id}`);
 
-    const res2 = await axios.get(
-      `http://localhost:8000/api/v1/profile/user/${id}`
-    );
+    const res2 = await axios.get(`/api/v1/profile/user/${id}`);
 
     dispatch({
       type: UPDATE_PROFILE,
@@ -215,13 +198,9 @@ export const sendRequest = (id) => async (dispatch) => {
 
 export const acceptRequest = (id) => async (dispatch) => {
   try {
-    const res1 = await axios.put(
-      `http://localhost:8000/api/v1/users/accept-request/${id}`
-    );
+    const res1 = await axios.put(`/api/v1/users/accept-request/${id}`);
 
-    const res2 = await axios.get(
-      `http://localhost:8000/api/v1/profile/user/${id}`
-    );
+    const res2 = await axios.get(`/api/v1/profile/user/${id}`);
 
     dispatch({
       type: UPDATE_PROFILE,

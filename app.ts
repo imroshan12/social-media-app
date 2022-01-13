@@ -10,6 +10,7 @@ import postRouter from './src/routes/postRoutes';
 import profileRouter from './src/routes/profileRoutes';
 import { PORT, MONGO_URI } from './src/config/keys';
 import { handleErrors } from './src/middlewares/handleErrors';
+import path from 'path';
 const app = express();
 
 // CONNECT TO DB
@@ -21,15 +22,16 @@ mongoose
     process.exit(1);
   });
 
-const corsOptions = {
-  origin: 'http://localhost:3000',
-  credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-};
+// const corsOptions = {
+//   origin: 'http://localhost:3000',
+//   credentials: true, //access-control-allow-credentials:true
+//   optionSuccessStatus: 200,
+// };
 
 // MIDDLEWARES
 app.use(express.static(`${__dirname}/public`));
-app.use(cors(corsOptions));
+app.use(express.static(path.join(__dirname, 'client', 'build')));
+app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(helmet());
@@ -46,6 +48,10 @@ app.use('/:file', (req, res) => {
 
 //ERROR HANDLING
 app.use(handleErrors);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+});
 
 // START SERVER
 app.listen(PORT, () => {
