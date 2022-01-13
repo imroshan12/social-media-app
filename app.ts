@@ -29,7 +29,7 @@ mongoose
 // };
 
 // MIDDLEWARES
-app.use(express.static(`${__dirname}/public`));
+// app.use(express.static(`${__dirname}/public`));
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.use(cors());
 app.use(express.json());
@@ -42,16 +42,15 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/profile', profileRouter);
-app.use('/:file', (req, res) => {
-  res.sendFile(`${__dirname}/public/uploads/${req.params.file}`);
-});
-
-//ERROR HANDLING
-app.use(handleErrors);
-
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
+// app.use('/:file', (req, res) => {
+//   res.sendFile(`${__dirname}/public/uploads/${req.params.file}`);
+// });
+
+//ERROR HANDLING
+app.use(handleErrors);
 
 // START SERVER
 app.listen(PORT, () => {
