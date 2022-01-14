@@ -4,12 +4,12 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
-import userRouter from './src/routes/userRoutes';
-import authRouter from './src/routes/authRoutes';
-import postRouter from './src/routes/postRoutes';
-import profileRouter from './src/routes/profileRoutes';
-import { PORT, MONGO_URI } from './src/config/keys';
-import { handleErrors } from './src/middlewares/handleErrors';
+import userRouter from './routes/userRoutes';
+import authRouter from './routes/authRoutes';
+import postRouter from './routes/postRoutes';
+import profileRouter from './routes/profileRoutes';
+import { PORT, MONGO_URI } from './config/keys';
+import { handleErrors } from './middlewares/handleErrors';
 import path from 'path';
 const app = express();
 
@@ -33,7 +33,7 @@ mongoose
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.use(cors());
 app.use(express.json());
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(helmet());
 app.use(fileUpload());
 
