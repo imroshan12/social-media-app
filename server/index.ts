@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
   );
   next();
 });
-app.use(express.static(path.join(__dirname, 'client', 'build')));
+app.use(express.static(path.join(__dirname, '../client', 'build')));
 app.use(cors());
 app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
