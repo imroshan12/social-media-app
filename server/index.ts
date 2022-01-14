@@ -45,7 +45,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/profile', profileRouter);
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client', 'build', 'index.html'));
 });
 // app.use('/:file', (req, res) => {
 //   res.sendFile(`${__dirname}/public/uploads/${req.params.file}`);
