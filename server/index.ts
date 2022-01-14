@@ -30,6 +30,13 @@ mongoose
 
 // MIDDLEWARES
 // app.use(express.static(`${__dirname}/public`));
+app.use(function (req, res, next) {
+  res.setHeader(
+    'Content-Security-Policy-Report-Only',
+    "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net https://kit.fontawesome.com/5da4c9d314.js; frame-src 'self';"
+  );
+  next();
+});
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.use(cors());
 app.use(express.json());
