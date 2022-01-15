@@ -3,6 +3,10 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
+import authRouter from './routes/authRoutes';
+import userRouter from './routes/userRoutes';
+import postRouter from './routes/postRoutes';
+import profileRouter from './routes/profileRoutes';
 import routes from './routes';
 import { PORT } from './config/keys';
 import { handleErrors } from './middlewares/handleErrors';
@@ -28,7 +32,11 @@ app.use(helmet());
 app.use(fileUpload());
 
 // ROUTES
-app.use('/api/v1', routes);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/posts', postRouter);
+// app.use('/api/v1', routes);
 // app.use('/:file', (req, res) => {
 //   res.sendFile(`${__dirname}/public/uploads/${req.params.file}`);
 // });

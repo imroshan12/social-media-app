@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { IGetUserAuthInfoRequest } from '../utils/interfaces';
-const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+import { JWT_SECRET } from '../config/keys';
 
 export const auth = (
   req: IGetUserAuthInfoRequest,
@@ -18,9 +18,12 @@ export const auth = (
   }
 
   // Verify token
+  console.log(JWT_SECRET);
+
   try {
     jwt.verify(token, JWT_SECRET, (error, decoded) => {
       if (error) {
+        console.log(error);
         return res.status(401).json({ msg: 'Token is not valid' });
       } else {
         req.user = decoded.user;

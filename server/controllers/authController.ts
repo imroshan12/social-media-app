@@ -60,6 +60,8 @@ export const loginUser = catchAsync(
       },
     };
 
+    console.log(JWT_SECRET, JWT_EXPIRES);
+
     jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES }, (err, token) => {
       if (err) throw err;
       return res.json({ token });
