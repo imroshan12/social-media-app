@@ -5,6 +5,8 @@ import { Link, Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
+import isEmpty from 'validator/lib/isEmpty';
+import isEmail from 'validator/lib/isEmail';
 
 const Register = (props) => {
   const dispatch = useDispatch();
@@ -25,8 +27,18 @@ const Register = (props) => {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    if (password !== password2) {
-      // props.setAlert('Passwords do not match', 'danger');
+    if (
+      isEmpty(name) ||
+      isEmpty(email) ||
+      isEmpty(password) ||
+      isEmpty(password2)
+    ) {
+      dispatch(setAlert('All fields are required', 'danger'));
+    } else if (!isEmail(email)) {
+      dispatch(setAlert('Email is invalid', 'danger'));
+    } else if (password.length < 8) {
+      dispatch(setAlert('Password must be at least 8 characters', 'danger'));
+    } else if (password !== password2) {
       dispatch(setAlert('Passwords do not match', 'danger'));
     } else {
       dispatch(register({ name, email, password }));
@@ -47,7 +59,7 @@ const Register = (props) => {
       <p className='lead'>
         <i className='fas fa-user'></i> Create Your Account
       </p>
-      <form className='form' onSubmit={onSubmitHandler}>
+      <form className='form' onSubmit={onSubmitHandler} noValidate>
         <div className='form-group'>
           <input
             type='text'

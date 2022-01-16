@@ -1,8 +1,10 @@
-import axios from 'axios';
+import isEmpty from 'validator/lib/isEmpty';
 import React, { Fragment } from 'react';
 import { useDispatch, useSelector, RootStateOrAny } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { login } from '../../actions/auth';
+import isEmail from 'validator/lib/isEmail';
+import { setAlert } from '../../actions/alert';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -21,7 +23,11 @@ const Login = () => {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    dispatch(login(email, password));
+    if (isEmail(email) && !isEmpty(password)) {
+      dispatch(login(email, password));
+    } else {
+      dispatch(setAlert('All fields are required', 'danger'));
+    }
   };
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -37,7 +43,7 @@ const Login = () => {
       <p className='lead'>
         <i className='fas fa-user'></i> Sign into your account
       </p>
-      <form className='form' onSubmit={onSubmitHandler}>
+      <form className='form' onSubmit={onSubmitHandler} noValidate>
         <div className='form-group'>
           <input
             type='email'
