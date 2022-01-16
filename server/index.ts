@@ -18,13 +18,13 @@ const app = express();
 connectDatabase();
 
 // MIDDLEWARES
-app.use(function (req, res, next) {
-  res.setHeader(
-    'Content-Security-Policy-Report-Only',
-    "default-src 'self'; font-src 'self'; img-src * 'self' data: https:; script-src 'self' https://kit.fontawesome.com/5da4c9d314.js https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css; frame-src 'self';"
-  );
-  next();
-});
+// app.use(function (req, res, next) {
+//   res.setHeader(
+//     'Content-Security-Policy-Report-Only',
+//     "default-src 'self'; font-src 'self'; img-src * 'self' data: https:; script-src 'self' https://kit.fontawesome.com/5da4c9d314.js https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css; frame-src 'self';"
+//   );
+//   next();
+// });
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
