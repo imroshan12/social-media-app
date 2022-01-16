@@ -28,7 +28,7 @@ app.use(function (req, res, next) {
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(helmet());
+// app.use(helmet());
 app.use(fileUpload());
 
 // ROUTES
